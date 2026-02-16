@@ -1,0 +1,77 @@
+import React, { useState } from 'react';
+import { useLocation } from 'wouter';
+import { useLanguage } from '@/lib/i18n';
+import { motion } from 'framer-motion';
+import { Check, ShieldCheck, Mail } from 'lucide-react';
+
+export default function ConnectGmail() {
+  const [, setLocation] = useLocation();
+  const { t } = useLanguage();
+  const [connecting, setConnecting] = useState(false);
+
+  const handleConnect = () => {
+    setConnecting(true);
+    setTimeout(() => {
+      setLocation('/dashboard');
+    }, 2000);
+  };
+
+  return (
+    <div className="flex flex-col h-full p-6 pt-12">
+      <div className="flex-1 flex flex-col items-center justify-center text-center">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 shadow-2xl relative"
+        >
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail" className="w-12 h-12" />
+          <div className="absolute -bottom-2 -right-2 bg-success text-white p-1.5 rounded-full border-4 border-background">
+            <Check className="w-4 h-4" strokeWidth={4} />
+          </div>
+        </motion.div>
+
+        <h1 className="text-2xl font-bold mb-4">{t('connect_gmail')}</h1>
+        <p className="text-muted-foreground mb-8 max-w-xs leading-relaxed">
+          {t('permission_body')}
+        </p>
+
+        <div className="bg-surface/50 p-4 rounded-2xl w-full mb-8 text-right space-y-3 border border-border/50">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              <Mail className="w-5 h-5" />
+            </div>
+            <span className="text-sm font-medium">{t('permission_access_1')}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <span className="text-sm font-medium">{t('permission_access_2')}</span>
+          </div>
+        </div>
+
+        <button 
+          onClick={handleConnect}
+          disabled={connecting}
+          className="w-full bg-white text-black py-4 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-3"
+        >
+          {connecting ? (
+            <span>{t('syncing')}</span>
+          ) : (
+            <>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" className="w-5 h-5" alt="G" />
+              <span>{t('connect_gmail')}</span>
+            </>
+          )}
+        </button>
+        
+        <button 
+          onClick={() => setLocation('/dashboard')}
+          className="mt-4 text-sm text-muted-foreground"
+        >
+          {t('skip_for_now')}
+        </button>
+      </div>
+    </div>
+  );
+}
