@@ -90,7 +90,8 @@ app.use((req, res, next) => {
   // Other ports are firewalled. Default to 5001 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = Number(process.env.PORT) || 5000;
+  const port = Number(process.env.PORT);
+if (!port) throw new Error("PORT env var is required in production");
  httpServer.listen(port, "0.0.0.0", () => {
   log(`serving on port ${port}`);
 });
