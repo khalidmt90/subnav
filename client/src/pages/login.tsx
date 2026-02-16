@@ -23,8 +23,8 @@ export default function Login() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8 text-center"
         >
-          <div className="w-16 h-16 bg-primary rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-primary/20 rotate-12">
-            <span className="text-3xl">📡</span>
+          <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center drop-shadow-2xl">
+            <img src="/logo.png" alt={t('app_name')} className="w-full h-full object-contain" />
           </div>
           <h1 className="text-3xl font-bold mb-2">{t('app_name')}</h1>
           <p className="text-muted-foreground">{isLogin ? t('login') : t('signup')}</p>

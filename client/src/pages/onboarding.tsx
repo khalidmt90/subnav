@@ -13,17 +13,17 @@ export default function Onboarding() {
     {
       title: t('onboard_1_title'),
       body: t('onboard_1_body'),
-      image: '🔍'
+      image: <img src="/logo.png" className="w-24 h-24 object-contain" alt="Logo" />
     },
     {
       title: t('onboard_2_title'),
       body: t('onboard_2_body'),
-      image: '🔔'
+      image: <span className="text-6xl">🔔</span>
     },
     {
       title: t('onboard_3_title'),
       body: t('onboard_3_body'),
-      image: '🛡️'
+      image: <span className="text-6xl">🛡️</span>
     }
   ];
 
