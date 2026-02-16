@@ -39,64 +39,39 @@
 }
 
 :root {
-  /* Updated Theme from "Full UI/UX Review" spec */
-  --background: #0a0a0f;
-  --foreground: #e8e8f0;
+  /* Design Tokens from User Spec */
+  --bg: #0B0C14;
+  --surface: #13141F;
+  --surface2: #1C1D2E;
+  --accent: #5B6CF8;
+  --accent2: #8B5CF6;
+  --teal: #2DD4BF;
+  --sky: #38BDF8;
+  --danger: #FA6D8A;
+  --success: #10B981;
+  --warning: #FAC06D;
+  --text: #F0F0FA;
+  --text-muted: #8A8AB8;
+  --muted: #7070A0;
+  --border: rgba(255,255,255,0.07);
+
+  /* Mapping to Tailwind/Shadcn variables */
+  --background: var(--bg);
+  --foreground: var(--text);
   
-  --surface: #12121a;
-  --surface-light: #1a1a26;
-  --surface-2: #1a1a26;
-  
-  --primary: #7c6dfa;
+  --primary: var(--accent);
   --primary-foreground: #ffffff;
   
-  --secondary: #1a1a26;
-  --secondary-foreground: #e8e8f0;
+  --secondary: var(--surface2);
+  --secondary-foreground: var(--text);
   
-  --accent: #7c6dfa;
-  --accent-foreground: #ffffff;
-  
-  --danger: #fa6d8a;    /* accent2 from spec */
-  --success: #10b981;   /* ok from spec */
-  --warning: #fac06d;   /* warn from spec */
-  --info: #6dfac7;      /* accent3 from spec */
-  
-  --muted: #7a7a9a;
-  --muted-foreground: #8a8aaa;
-  
-  --border: #2a2a3a;
-  --input: #2a2a3a;
+  --input: var(--border);
   
   /* Font Families */
   --font-arabic: 'IBM Plex Sans Arabic', sans-serif;
   --font-english: 'DM Sans', sans-serif;
   --font-display: 'DM Serif Display', serif;
   --font-mono: 'JetBrains Mono', monospace;
-}
-
-/* Light Theme Variables - Adjusted to match the new dark theme logic if needed, 
-   but spec focuses on dark mode. Keeping light mode for fallback but aligned with new palette */
-.light {
-  --background: #f8f7fc;
-  --foreground: #14141a;
-  
-  --surface: #ffffff;
-  --surface-light: #f0f0f5;
-  --surface-2: #eaeaee;
-  
-  --primary: #7c6dfa;
-  --primary-foreground: #ffffff;
-  
-  --secondary: #eaeaee;
-  --secondary-foreground: #14141a;
-  
-  --accent: #7c6dfa;
-  
-  --border: rgba(0,0,0,0.07);
-  --input: rgba(0,0,0,0.07);
-  
-  --muted: #8a8aaa;
-  --muted-foreground: #666680;
 }
 
 @layer base {
