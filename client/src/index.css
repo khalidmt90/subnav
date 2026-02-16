@@ -11,6 +11,7 @@
   
   --color-surface: var(--surface);
   --color-surface-light: var(--surface-light);
+  --color-surface-2: var(--surface-2);
   
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -38,57 +39,63 @@
 }
 
 :root {
-  /* Dark Theme by Default as requested in spec */
-  --background: #0F0F14;
-  --foreground: #E8E8F0;
+  /* Updated Theme from "Full UI/UX Review" spec */
+  --background: #0a0a0f;
+  --foreground: #e8e8f0;
   
-  --surface: #1A1A26;
-  --surface-light: #252536;
+  --surface: #12121a;
+  --surface-light: #1a1a26;
+  --surface-2: #1a1a26;
   
-  --primary: #7C6DFA; /* Indigo Accent */
-  --primary-foreground: #FFFFFF;
+  --primary: #7c6dfa;
+  --primary-foreground: #ffffff;
   
-  --secondary: #2A2A3A;
-  --secondary-foreground: #E8E8F0;
+  --secondary: #1a1a26;
+  --secondary-foreground: #e8e8f0;
   
-  --accent: #7C6DFA;
-  --accent-foreground: #FFFFFF;
+  --accent: #7c6dfa;
+  --accent-foreground: #ffffff;
   
-  --danger: #FA6D8A;
-  --success: #10B981;
-  --warning: #FAC06D;
+  --danger: #fa6d8a;    /* accent2 from spec */
+  --success: #10b981;   /* ok from spec */
+  --warning: #fac06d;   /* warn from spec */
+  --info: #6dfac7;      /* accent3 from spec */
   
-  --muted: #7A7A9A;
-  --muted-foreground: #8A8AAA;
+  --muted: #7a7a9a;
+  --muted-foreground: #8a8aaa;
   
-  --border: rgba(255,255,255,0.08);
-  --input: rgba(255,255,255,0.08);
+  --border: #2a2a3a;
+  --input: #2a2a3a;
   
   /* Font Families */
   --font-arabic: 'IBM Plex Sans Arabic', sans-serif;
-  --font-english: 'Inter', sans-serif;
+  --font-english: 'DM Sans', sans-serif;
+  --font-display: 'DM Serif Display', serif;
+  --font-mono: 'JetBrains Mono', monospace;
 }
 
-/* Light Theme Variables */
+/* Light Theme Variables - Adjusted to match the new dark theme logic if needed, 
+   but spec focuses on dark mode. Keeping light mode for fallback but aligned with new palette */
 .light {
-  --background: #F8F7FC;
-  --foreground: #14141A;
+  --background: #f8f7fc;
+  --foreground: #14141a;
   
-  --surface: #FFFFFF;
-  --surface-light: #F0F0F5;
+  --surface: #ffffff;
+  --surface-light: #f0f0f5;
+  --surface-2: #eaeaee;
   
-  --primary: #7C6DFA;
-  --primary-foreground: #FFFFFF;
+  --primary: #7c6dfa;
+  --primary-foreground: #ffffff;
   
-  --secondary: #EAEAEE;
-  --secondary-foreground: #14141A;
+  --secondary: #eaeaee;
+  --secondary-foreground: #14141a;
   
-  --accent: #7C6DFA;
+  --accent: #7c6dfa;
   
   --border: rgba(0,0,0,0.07);
   --input: rgba(0,0,0,0.07);
   
-  --muted: #8A8AAA;
+  --muted: #8a8aaa;
   --muted-foreground: #666680;
 }
 
