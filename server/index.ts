@@ -23,6 +23,9 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
+// ✅ Health check (useful for Railway debugging)
+app.get("/healthz", (_req, res) => res.status(200).send("ok"));
+
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -63,6 +66,17 @@ app.use((req, res, next) => {
 (async () => {
   await registerRoutes(httpServer, app);
 
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (process.env.NODE_ENV === "production") {
+    serveStatic(app);
+  } else {
+    const { setupVite } = await import("./vite");
+    await setupVite(httpServer, app);
+  }
+
+  // Error handler LAST
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -76,24 +90,13 @@ app.use((req, res, next) => {
     return res.status(status).json({ message });
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
-  }
-
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5001 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // ✅ Railway port + logging
   const port = Number(process.env.PORT);
-if (!port) throw new Error("PORT env var is required in production");
- httpServer.listen(port, "0.0.0.0", () => {
-  log(`serving on port ${port}`);
-});
+  if (!port) throw new Error("PORT env var is required");
 
+  log(`ENV PORT = ${process.env.PORT}`);
+
+  httpServer.listen(port, "0.0.0.0", () => {
+    log(`serving on port ${port}`);
+  });
 })();
