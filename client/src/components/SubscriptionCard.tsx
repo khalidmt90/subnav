@@ -1,25 +1,27 @@
-import React, { useState } from 'react';
-import { motion, useMotionValue, useTransform, PanInfo, useAnimation } from 'framer-motion';
+import React from 'react';
+import { motion, useMotionValue, PanInfo, useAnimation } from 'framer-motion';
 import { useLanguage } from '@/lib/i18n';
 import { formatCurrency } from '@/lib/utils';
 import { ChevronRight, ChevronLeft, BellOff, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLocation } from 'wouter';
+import { useSubscriptions } from '@/hooks/useSubscriptions';
 
-interface Subscription {
-  id: string;
+interface SubscriptionProps {
+  id: number;
   name: string;
   amount: number;
   renewalDate: Date;
   logoColor: string;
   category: string;
-  isTrial?: boolean;
+  isTrial?: boolean | null;
+  isMuted?: boolean | null;
 }
 
-import { useLocation } from 'wouter';
-
-export function SubscriptionCard({ sub }: { sub: Subscription }) {
+export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
   const [, setLocation] = useLocation();
   const { language, isRTL, t } = useLanguage();
+  const { updateSubscription, deleteSubscription } = useSubscriptions();
   const controls = useAnimation();
   
   const daysLeft = Math.ceil((sub.renewalDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
@@ -29,34 +31,45 @@ export function SubscriptionCard({ sub }: { sub: Subscription }) {
 
   const handleDragEnd = async (event: any, info: PanInfo) => {
     const threshold = 100;
-    const velocity = info.velocity.x;
-
-    // Swipe left (LTR) or right (RTL depending on implementation) to reveal actions
-    // In this implementation, actions are on the right side (end).
-    // So dragging to the left reveals them.
-    
-    if (info.offset.x < -threshold || velocity < -500) {
+    if (info.offset.x < -threshold || info.velocity.x < -500) {
       await controls.start({ x: -140 });
     } else {
       await controls.start({ x: 0 });
     }
   };
 
+  const handleMute = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await updateSubscription({ id: sub.id, isMuted: !sub.isMuted });
+    await controls.start({ x: 0 });
+  };
+
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await deleteSubscription(sub.id);
+  };
+
   return (
-    <div className="relative mb-3 rounded-2xl overflow-hidden bg-background">
-      {/* Background Actions Layer */}
+    <div className="relative mb-3 rounded-2xl overflow-hidden bg-background" data-testid={`card-subscription-${sub.id}`}>
       <div className="absolute inset-y-0 right-0 flex w-[140px]">
-        <button className="flex-1 bg-neutral-800 flex flex-col items-center justify-center text-white gap-1 active:bg-neutral-700 transition-colors">
+        <button
+          onClick={handleMute}
+          data-testid={`button-mute-${sub.id}`}
+          className="flex-1 bg-neutral-800 flex flex-col items-center justify-center text-white gap-1 active:bg-neutral-700 transition-colors"
+        >
           <BellOff className="w-5 h-5" />
           <span className="text-[10px]">{t('mute')}</span>
         </button>
-        <button className="flex-1 bg-danger flex flex-col items-center justify-center text-white gap-1 active:bg-red-600 transition-colors">
+        <button
+          onClick={handleDelete}
+          data-testid={`button-cancel-${sub.id}`}
+          className="flex-1 bg-danger flex flex-col items-center justify-center text-white gap-1 active:bg-red-600 transition-colors"
+        >
           <Trash2 className="w-5 h-5" />
           <span className="text-[10px]">{t('cancel')}</span>
         </button>
       </div>
 
-      {/* Foreground Card Layer */}
       <motion.div 
         drag="x"
         dragConstraints={{ left: -140, right: 0 }}
@@ -67,7 +80,6 @@ export function SubscriptionCard({ sub }: { sub: Subscription }) {
         onClick={() => setLocation(`/subscription/${sub.id}`)}
         className="bg-surface p-4 flex items-center gap-4 relative z-10 active:cursor-grabbing cursor-grab touch-pan-y"
       >
-        {/* Logo Placeholder */}
         <div 
           className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-lg shrink-0"
           style={{ backgroundColor: sub.logoColor }}
@@ -77,8 +89,8 @@ export function SubscriptionCard({ sub }: { sub: Subscription }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex justify-between items-start">
-            <h3 className="font-semibold text-foreground text-lg leading-tight truncate pr-2">{sub.name}</h3>
-            <span className="font-bold text-foreground font-english shrink-0 text-sm sm:text-base">
+            <h3 className="font-semibold text-foreground text-lg leading-tight truncate pr-2" data-testid={`text-name-${sub.id}`}>{sub.name}</h3>
+            <span className="font-bold text-foreground font-english shrink-0 text-sm sm:text-base" data-testid={`text-amount-${sub.id}`}>
               {formatCurrency(sub.amount, language)}
             </span>
           </div>

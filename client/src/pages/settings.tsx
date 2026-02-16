@@ -1,23 +1,46 @@
 import React from 'react';
 import { useLanguage } from '@/lib/i18n';
+import { useAuth } from '@/hooks/useAuth';
 import { ChevronLeft, ChevronRight, Globe, Moon, Bell, Shield, LogOut } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
+import { useLocation } from 'wouter';
 
 export default function Settings() {
   const { t, language, setLanguage, isRTL } = useLanguage();
+  const { user, updateUser, logout } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = async () => {
+    await logout();
+    setLocation('/login');
+  };
+
+  const handleToggleNotifications = async (checked: boolean) => {
+    if (user) {
+      await updateUser({ notificationsEnabled: checked });
+    }
+  };
+
+  const handleLanguageToggle = async () => {
+    const newLang = language === 'ar' ? 'en' : 'ar';
+    setLanguage(newLang);
+    if (user) {
+      await updateUser({ language: newLang });
+    }
+  };
 
   const sections = [
     {
       title: t('account'),
       items: [
-        { icon: Globe, label: t('language'), value: language === 'ar' ? 'العربية' : 'English', action: () => setLanguage(language === 'ar' ? 'en' : 'ar') },
+        { icon: Globe, label: t('language'), value: language === 'ar' ? 'العربية' : 'English', action: handleLanguageToggle },
         { icon: Moon, label: t('theme'), value: t('theme_dark'), toggle: true },
       ]
     },
     {
       title: t('notifications'),
       items: [
-        { icon: Bell, label: t('enable_notifications'), toggle: true, defaultChecked: true },
+        { icon: Bell, label: t('enable_notifications'), toggle: true, defaultChecked: user?.notificationsEnabled ?? true, onToggle: handleToggleNotifications },
         { icon: Bell, label: t('notify_before'), value: t('three_days') },
       ]
     },
@@ -25,14 +48,14 @@ export default function Settings() {
       title: t('privacy_section'),
       items: [
         { icon: Shield, label: t('privacy_policy') },
-        { icon: LogOut, label: t('logout'), danger: true },
+        { icon: LogOut, label: t('logout'), danger: true, action: handleLogout },
       ]
     }
   ];
 
   return (
     <div className="p-6 pb-24">
-      <h1 className="text-2xl font-bold text-foreground mb-6">{t('settings')}</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6" data-testid="text-settings-title">{t('settings')}</h1>
 
       <div className="space-y-6">
         {sections.map((section, idx) => (
@@ -43,6 +66,7 @@ export default function Settings() {
                 <div 
                   key={itemIdx}
                   onClick={item.action}
+                  data-testid={`button-setting-${idx}-${itemIdx}`}
                   className={`flex items-center justify-between p-4 ${itemIdx !== section.items.length - 1 ? 'border-b border-border/50' : ''} ${item.action ? 'cursor-pointer active:bg-white/5' : ''}`}
                 >
                   <div className="flex items-center gap-3">
@@ -56,7 +80,12 @@ export default function Settings() {
 
                   <div className="flex items-center gap-2">
                     {item.value && <span className="text-sm text-muted-foreground">{item.value}</span>}
-                    {item.toggle && <Switch defaultChecked={item.defaultChecked} />}
+                    {item.toggle && (
+                      <Switch
+                        defaultChecked={item.defaultChecked}
+                        onCheckedChange={(item as any).onToggle}
+                      />
+                    )}
                     {!item.toggle && !item.value && (
                       isRTL ? <ChevronLeft className="w-5 h-5 text-muted-foreground/50" /> : <ChevronRight className="w-5 h-5 text-muted-foreground/50" />
                     )}
