@@ -3,20 +3,20 @@ import fs from "fs";
 import path from "path";
 
 export function serveStatic(app: Express) {
-  // In production builds (Vite), files are usually in /dist at project root
-  const distPath = path.resolve(process.cwd(), "dist");
+  // Vite output (per your build log): dist/public/*
+  const distPath = path.resolve(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
     throw new Error(
-      `Could not find build directory: ${distPath}. Make sure you ran the client build (npm run build).`
+      `Could not find the build directory: ${distPath}. Run "npm run build" first.`
     );
   }
 
   // Serve static assets
   app.use(express.static(distPath));
 
-  // SPA fallback (important for routing)
-  app.get("*", (_req, res) => {
+  // SPA fallback (routing) — use RegExp to avoid path-to-regexp "*" crash
+  app.get(/.*/, (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
