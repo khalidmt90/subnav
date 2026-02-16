@@ -96,7 +96,9 @@ app.use((req, res, next) => {
 
   log(`ENV PORT = ${process.env.PORT}`);
 
-  httpServer.listen(port, "0.0.0.0", () => {
+  // Let Node bind on all interfaces (IPv4 + IPv6)
+  httpServer.listen(port, () => {
     log(`serving on port ${port}`);
   });
 })();
+
