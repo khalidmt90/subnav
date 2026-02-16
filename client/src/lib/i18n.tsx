@@ -120,6 +120,15 @@ const translations = {
     notification_title: 'تجديد اشتراك {merchant}',
     notification_body_amount: '{title} يجدد {when} - {amount} ريال',
     notification_body_no_amount: '{title} يجدد {when}',
+    add_subscription: 'إضافة اشتراك',
+    sub_name: 'اسم الخدمة',
+    sub_name_placeholder: 'مثال: Netflix',
+    sub_amount: 'المبلغ (ريال)',
+    sub_renewal: 'تاريخ التجديد القادم',
+    sub_category: 'الفئة',
+    sub_trial: 'فترة تجريبية',
+    add: 'إضافة',
+    close: 'إغلاق',
   },
   en: {
     app_name: 'Subscriptions Radar',
@@ -230,6 +239,15 @@ const translations = {
     notification_title: 'Renewal: {merchant}',
     notification_body_amount: '{title} renews {when} - {amount}',
     notification_body_no_amount: '{title} renews {when}',
+    add_subscription: 'Add Subscription',
+    sub_name: 'Service Name',
+    sub_name_placeholder: 'e.g. Netflix',
+    sub_amount: 'Amount (SAR)',
+    sub_renewal: 'Next Renewal Date',
+    sub_category: 'Category',
+    sub_trial: 'Free Trial',
+    add: 'Add',
+    close: 'Close',
   }
 };
 
