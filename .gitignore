@@ -31,3 +31,17 @@ attached_assets/
 # deps / builds
 node_modules/
 dist/
+
+# secrets
+.env
+.env.*
+
+# local state / replit artifacts
+.local/
+.replit
+replit.md
+attached_assets/
+
+# dependencies / builds
+node_modules/
+dist/
