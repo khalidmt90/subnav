@@ -12,7 +12,11 @@ import Dashboard from "@/pages/dashboard";
 import Settings from "@/pages/settings";
 import Notifications from "@/pages/notifications";
 
+import SubscriptionDetailScreen from "@/screens/SubscriptionDetailScreen";
+
 function Router() {
+  const { dir } = useLanguage();
+  
   return (
     <MobileLayout>
       <Switch>
@@ -23,6 +27,7 @@ function Router() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/settings" component={Settings} />
         <Route path="/notifications" component={Notifications} />
+        <Route path="/subscription/:id" component={SubscriptionDetailScreen} />
         <Route component={NotFound} />
       </Switch>
     </MobileLayout>

@@ -15,7 +15,10 @@ interface Subscription {
   isTrial?: boolean;
 }
 
+import { useLocation } from 'wouter';
+
 export function SubscriptionCard({ sub }: { sub: Subscription }) {
+  const [, setLocation] = useLocation();
   const { language, isRTL, t } = useLanguage();
   const controls = useAnimation();
   
@@ -61,6 +64,7 @@ export function SubscriptionCard({ sub }: { sub: Subscription }) {
         onDragEnd={handleDragEnd}
         animate={controls}
         style={{ x }}
+        onClick={() => setLocation(`/subscription/${sub.id}`)}
         className="bg-surface p-4 flex items-center gap-4 relative z-10 active:cursor-grabbing cursor-grab touch-pan-y"
       >
         {/* Logo Placeholder */}
