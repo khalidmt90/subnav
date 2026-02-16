@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 export function serveStatic(app: Express) {
-  // Vite output (per your build log): dist/public/*
+  // Your Vite build output: dist/public/*
   const distPath = path.resolve(process.cwd(), "dist", "public");
 
   if (!fs.existsSync(distPath)) {
@@ -15,8 +15,8 @@ export function serveStatic(app: Express) {
   // Serve static assets
   app.use(express.static(distPath));
 
-  // SPA fallback (routing) — use RegExp to avoid path-to-regexp "*" crash
-  app.get(/.*/, (_req, res) => {
+  // SPA fallback (Express 5-safe): RegExp avoids path-to-regexp wildcard crash
+  app.get(/^(?!\/api\/).*/, (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
