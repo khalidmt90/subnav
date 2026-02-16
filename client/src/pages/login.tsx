@@ -1,98 +1,96 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useLanguage } from '@/lib/i18n';
-import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const { t, isRTL } = useLanguage();
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
+  const [loading, setLoading] = useState<'apple' | 'google' | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLocation('/connect-gmail');
+  const handleAppleLogin = () => {
+    setLoading('apple');
+    setTimeout(() => {
+      setLocation('/connect-gmail');
+    }, 1500);
+  };
+
+  const handleGoogleLogin = () => {
+    setLoading('google');
+    setTimeout(() => {
+      setLocation('/connect-gmail');
+    }, 1500);
   };
 
   return (
-    <div className="flex flex-col h-full p-6 pt-12">
-      <div className="flex-1 flex flex-col justify-center">
+    <div className="flex flex-col h-full p-6 pt-12 relative overflow-hidden">
+      {/* Background Gradients */}
+      <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[60%] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#5B6CF8]/10 via-transparent to-transparent pointer-events-none blur-3xl" />
+      
+      <div className="flex-1 flex flex-col justify-center relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8 text-center"
+          className="mb-12 text-center"
         >
-          <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center drop-shadow-2xl">
+          <div className="w-24 h-24 mx-auto mb-6 flex items-center justify-center drop-shadow-[0_10px_30px_rgba(91,108,248,0.3)]">
             <img src="/logo.png" alt={t('app_name')} className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">{t('app_name')}</h1>
-          <p className="text-muted-foreground">{isLogin ? t('login') : t('signup')}</p>
+          <h1 className="text-3xl font-bold mb-3 text-white">{t('app_name')}</h1>
+          <p className="text-[#8A8AB8] text-lg max-w-[280px] mx-auto leading-relaxed">
+            {isRTL ? 'سجّل الدخول للمتابعة' : 'Log in or Sign up to continue'}
+          </p>
         </motion.div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <label className="text-sm font-medium ml-1">{t('email')}</label>
-            <div className="relative">
-              <input 
-                type="email" 
-                className={`w-full bg-surface border border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors ${isRTL ? 'pl-10 text-right' : 'pr-10 text-left'}`}
-                placeholder="name@example.com"
-              />
-              <Mail className={`absolute top-3.5 text-muted-foreground w-5 h-5 ${isRTL ? 'left-3' : 'right-3'}`} />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium ml-1">{t('password')}</label>
-            <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"}
-                className={`w-full bg-surface border border-border rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors ${isRTL ? 'pl-10 text-right' : 'pr-10 text-left'}`}
-                placeholder="••••••••"
-              />
-              <button 
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className={`absolute top-3.5 text-muted-foreground ${isRTL ? 'left-3' : 'right-3'}`}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {isLogin && (
-            <div className="flex justify-end">
-              <button type="button" className="text-sm text-primary font-medium">
-                {t('forgot_password')}
-              </button>
-            </div>
-          )}
-
-          <button 
-            type="submit"
-            className="w-full bg-primary text-primary-foreground py-4 rounded-xl font-bold text-lg shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform mt-4"
+        <div className="space-y-4 w-full max-w-sm mx-auto">
+          {/* Apple Button */}
+          <motion.button 
+            whileTap={{ scale: 0.98 }}
+            onClick={handleAppleLogin}
+            disabled={loading !== null}
+            className="w-full h-[56px] bg-white text-black rounded-[18px] flex items-center justify-center gap-3 shadow-lg relative overflow-hidden group"
           >
-            {isLogin ? t('login') : t('signup')}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button 
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm text-muted-foreground"
-          >
-            {isLogin ? (
-              <span>
-                {t('signup')}
-              </span>
+            {loading === 'apple' ? (
+              <div className="w-6 h-6 border-2 border-black/20 border-t-black rounded-full animate-spin" />
             ) : (
-              <span>
-                {t('login')}
-              </span>
+              <>
+                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.74s2.2-.82 3.35-.68c.2.01.6.03 1.02.16 2.05.63 3.09 2.15 3.1 2.18-.03.02-2.45 1.41-2.43 4.09.02 2.76 2.45 3.84 2.5 3.87-.02.06-.39 1.34-1.28 2.61zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.16 2.29-2.08 4.34-3.74 4.25z" />
+                </svg>
+                <span className="font-bold text-lg">
+                  {isRTL ? 'المتابعة باستخدام Apple' : 'Continue with Apple'}
+                </span>
+              </>
             )}
-          </button>
+          </motion.button>
+
+          {/* Google Button */}
+          <motion.button 
+            whileTap={{ scale: 0.98 }}
+            onClick={handleGoogleLogin}
+            disabled={loading !== null}
+            className="w-full h-[56px] bg-[#1C1D2E] text-white border border-[rgba(255,255,255,0.08)] rounded-[18px] flex items-center justify-center gap-3 shadow-lg relative overflow-hidden"
+          >
+            {loading === 'google' ? (
+              <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+            ) : (
+              <>
+                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center p-1">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" className="w-full h-full" />
+                </div>
+                <span className="font-bold text-lg">
+                  {isRTL ? 'المتابعة باستخدام Google' : 'Continue with Google'}
+                </span>
+              </>
+            )}
+          </motion.button>
         </div>
+
+        <p className="mt-8 text-center text-[#7070A0] text-xs px-8 leading-relaxed">
+          {isRTL 
+            ? 'بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية الخاصة بنا.' 
+            : 'By continuing, you agree to our Terms of Service and Privacy Policy.'}
+        </p>
       </div>
     </div>
   );
