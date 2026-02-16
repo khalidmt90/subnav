@@ -4,6 +4,8 @@ import { useLanguage } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { Check, ShieldCheck, Mail } from 'lucide-react';
 
+import { GoogleLogo } from '@/components/Icons';
+
 export default function ConnectGmail() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
@@ -24,7 +26,9 @@ export default function ConnectGmail() {
           animate={{ scale: 1, opacity: 1 }}
           className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 shadow-2xl relative"
         >
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail" className="w-12 h-12" />
+          <div className="w-12 h-12">
+            <GoogleLogo className="w-full h-full" />
+          </div>
           <div className="absolute -bottom-2 -right-2 bg-success text-white p-1.5 rounded-full border-4 border-background">
             <Check className="w-4 h-4" strokeWidth={4} />
           </div>
@@ -59,7 +63,9 @@ export default function ConnectGmail() {
             <span>{t('syncing')}</span>
           ) : (
             <>
-              <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" className="w-5 h-5" alt="G" />
+              <div className="w-5 h-5">
+                <GoogleLogo className="w-full h-full" />
+              </div>
               <span>{t('connect_gmail')}</span>
             </>
           )}

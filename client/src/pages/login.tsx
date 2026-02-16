@@ -3,6 +3,8 @@ import { useLocation } from 'wouter';
 import { useLanguage } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 
+import { GoogleLogo, AppleLogo } from '@/components/Icons';
+
 export default function Login() {
   const [, setLocation] = useLocation();
   const { t, isRTL } = useLanguage();
@@ -54,9 +56,7 @@ export default function Login() {
               <div className="w-6 h-6 border-2 border-black/20 border-t-black rounded-full animate-spin" />
             ) : (
               <>
-                <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.74s2.2-.82 3.35-.68c.2.01.6.03 1.02.16 2.05.63 3.09 2.15 3.1 2.18-.03.02-2.45 1.41-2.43 4.09.02 2.76 2.45 3.84 2.5 3.87-.02.06-.39 1.34-1.28 2.61zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.16 2.29-2.08 4.34-3.74 4.25z" />
-                </svg>
+                <AppleLogo className="w-6 h-6" />
                 <span className="font-bold text-lg">
                   {isRTL ? 'المتابعة باستخدام Apple' : 'Continue with Apple'}
                 </span>
@@ -76,7 +76,7 @@ export default function Login() {
             ) : (
               <>
                 <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center p-1">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="G" className="w-full h-full" />
+                  <GoogleLogo className="w-full h-full" />
                 </div>
                 <span className="font-bold text-lg">
                   {isRTL ? 'المتابعة باستخدام Google' : 'Continue with Google'}
