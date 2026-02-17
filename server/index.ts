@@ -89,16 +89,22 @@ app.use((req, res, next) => {
 
     return res.status(status).json({ message });
   });
+  // ✅ Port handling:
+  // - Railway sets PORT in production (must use it)
+  // - Local dev can default to 5000
+  const isProd = process.env.NODE_ENV === "production";
 
-  // ✅ Railway port + logging
-  const port = Number(process.env.PORT);
-  if (!port) throw new Error("PORT env var is required");
+  const port = isProd ? Number(process.env.PORT) : Number(process.env.PORT) || 5000;
 
+  if (isProd && !port) {
+    throw new Error("PORT env var is required in production");
+  }
+
+  log(`ENV NODE_ENV = ${process.env.NODE_ENV}`);
   log(`ENV PORT = ${process.env.PORT}`);
 
-  // Let Node bind on all interfaces (IPv4 + IPv6)
-  httpServer.listen(port, () => {
+  // Bind on all interfaces (Railway requires this)
+  httpServer.listen(port, "0.0.0.0", () => {
     log(`serving on port ${port}`);
   });
 })();
-

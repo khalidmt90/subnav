@@ -5,17 +5,33 @@ import { motion } from 'framer-motion';
 import { Check, ShieldCheck, Mail } from 'lucide-react';
 
 import { GoogleLogo } from '@/components/Icons';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function ConnectGmail() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
   const [connecting, setConnecting] = useState(false);
 
-  const handleConnect = () => {
+  const handleConnect = async () => {
     setConnecting(true);
-    setTimeout(() => {
+    try {
+      console.log("Connecting to Gmail...");
+      console.log("Supabase URL:", import.meta.env.VITE_SUPABASE_URL);
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+
+      if (error) throw error;
+
+      console.log("Connection successful:", data);
       setLocation('/dashboard');
-    }, 2000);
+    } catch (e) {
+      console.error("Connection failed:", e);
+      alert("Failed to connect to Gmail.");
+    } finally {
+      setConnecting(false);
+    }
   };
 
   return (

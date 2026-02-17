@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useLanguage } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/lib/supabaseClient';
 
 import { GoogleLogo, AppleLogo } from '@/components/Icons';
 
@@ -11,6 +12,20 @@ export default function Login() {
   const { t, isRTL } = useLanguage();
   const { login, isLoggingIn } = useAuth();
   const [loadingProvider, setLoadingProvider] = useState<'apple' | 'google' | null>(null);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error fetching session:', error);
+      } else {
+        setUser(session?.user || null);
+      }
+    };
+
+    getSession();
+  }, []);
 
   const handleAppleLogin = async () => {
     setLoadingProvider('apple');
@@ -25,9 +40,13 @@ export default function Login() {
   const handleGoogleLogin = async () => {
     setLoadingProvider('google');
     try {
-      await login({ email: "user@gmail.com", displayName: "Google User", provider: "google" });
-      setLocation('/connect-gmail');
-    } catch {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+      });
+      if (error) throw error;
+    } catch (e) {
+      console.error("Google login failed:", e);
+      alert(String(e));
       setLoadingProvider(null);
     }
   };
