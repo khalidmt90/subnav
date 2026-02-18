@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -11,6 +12,8 @@ import ConnectGmail from "@/pages/connect-gmail";
 import Dashboard from "@/pages/dashboard";
 import Settings from "@/pages/settings";
 import Notifications from "@/pages/notifications";
+import AuthCallback from "@/pages/auth-callback";
+import { initializeOAuthHandler, cleanupOAuthHandler } from "@/lib/auth-utils";
 
 import SubscriptionDetailScreen from "@/screens/SubscriptionDetailScreen";
 
@@ -29,12 +32,21 @@ function Router() {
         <Route path="/notifications" component={Notifications} />
         <Route path="/subscription/:id" component={SubscriptionDetailScreen} />
         <Route component={NotFound} />
+        <Route path="/auth/callback" component={AuthCallback} />
       </Switch>
     </MobileLayout>
   );
 }
 
 function App() {
+  // Initialize OAuth deep link handler for Capacitor
+  useEffect(() => {
+    initializeOAuthHandler();
+    return () => {
+      cleanupOAuthHandler();
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>

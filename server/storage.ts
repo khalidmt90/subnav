@@ -1,10 +1,11 @@
 import { eq, and, asc, desc } from "drizzle-orm";
 import { db } from "./db";
 import {
-  users, subscriptions, notifications,
+  users, subscriptions, notifications, syncStatus,
   type User, type InsertUser,
   type Subscription, type InsertSubscription,
   type Notification, type InsertNotification,
+  type SyncStatus, type InsertSyncStatus,
 } from "@shared/schema";
 
 export interface IStorage {
@@ -23,6 +24,10 @@ export interface IStorage {
   createNotification(notif: InsertNotification): Promise<Notification>;
   markNotificationRead(id: number): Promise<void>;
   markAllNotificationsRead(userId: number): Promise<void>;
+
+  getSyncStatus(userId: number): Promise<SyncStatus | undefined>;
+  upsertSyncStatus(data: InsertSyncStatus): Promise<SyncStatus>;
+  updateSyncStatus(userId: number, data: Partial<InsertSyncStatus>): Promise<SyncStatus | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -88,6 +93,33 @@ export class DatabaseStorage implements IStorage {
 
   async markAllNotificationsRead(userId: number): Promise<void> {
     await db.update(notifications).set({ isRead: true }).where(eq(notifications.userId, userId));
+  }
+
+  async getSyncStatus(userId: number): Promise<SyncStatus | undefined> {
+    const [status] = await db.select().from(syncStatus).where(eq(syncStatus.userId, userId));
+    return status;
+  }
+
+  async upsertSyncStatus(data: InsertSyncStatus): Promise<SyncStatus> {
+    const existing = await this.getSyncStatus(data.userId);
+    if (existing) {
+      const [updated] = await db.update(syncStatus)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(syncStatus.userId, data.userId))
+        .returning();
+      return updated;
+    } else {
+      const [created] = await db.insert(syncStatus).values(data).returning();
+      return created;
+    }
+  }
+
+  async updateSyncStatus(userId: number, data: Partial<InsertSyncStatus>): Promise<SyncStatus | undefined> {
+    const [status] = await db.update(syncStatus)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(syncStatus.userId, userId))
+      .returning();
+    return status;
   }
 }
 

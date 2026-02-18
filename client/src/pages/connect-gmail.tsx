@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLocation } from 'wouter';
 import { useLanguage } from '@/lib/i18n';
 import { motion } from 'framer-motion';
@@ -10,27 +10,64 @@ import { supabase } from '@/lib/supabaseClient';
 export default function ConnectGmail() {
   const [, setLocation] = useLocation();
   const { t } = useLanguage();
-  const [connecting, setConnecting] = useState(false);
 
   const handleConnect = async () => {
-    setConnecting(true);
     try {
-      console.log("Connecting to Gmail...");
-      console.log("Supabase URL:", import.meta.env.VITE_SUPABASE_URL);
+      // Get the current Supabase session
+      const { data: { session }, error } = await supabase.auth.getSession();
 
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      // Get Google access token from localStorage (stored during OAuth callback)
+      const googleAccessToken = localStorage.getItem('google_access_token');
+
+      if (error || !session) {
+        throw new Error('Not authenticated. Please log in again.');
+      }
+
+      if (!googleAccessToken) {
+        throw new Error('No Gmail access token found. Please log in again.');
+      }
+
+      console.log('✅ Starting background Gmail sync and navigating to dashboard...');
+
+      // Get the backend URL
+      const isNative = window.location.protocol === 'capacitor:';
+      const baseUrl = isNative
+        ? (import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001')
+        : '';
+      const backendUrl = `${baseUrl}/api/subscriptions/sync-gmail`;
+
+      // Get backend session ID for mobile apps
+      const backendSessionId = localStorage.getItem('backend_session_id');
+
+      // Start background sync (don't await - fire and forget)
+      fetch(backendUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          accessToken: googleAccessToken,
+          sessionId: backendSessionId,
+        }),
+      }).then(response => {
+        if (response.ok) {
+          console.log('✅ Background sync started successfully');
+        } else {
+          console.error('❌ Background sync failed to start');
+        }
+      }).catch(error => {
+        console.error('❌ Background sync error:', error);
       });
 
-      if (error) throw error;
-
-      console.log("Connection successful:", data);
+      // Navigate to dashboard immediately
+      console.log('🚀 Navigating to dashboard while sync runs in background...');
       setLocation('/dashboard');
-    } catch (e) {
-      console.error("Connection failed:", e);
-      alert("Failed to connect to Gmail.");
-    } finally {
-      setConnecting(false);
+
+    } catch (error) {
+      console.error('❌ Gmail connection error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      alert(t('sync_failed_error', { error: errorMessage }));
     }
   };
 
@@ -70,24 +107,17 @@ export default function ConnectGmail() {
           </div>
         </div>
 
-        <button 
+        <button
           onClick={handleConnect}
-          disabled={connecting}
           className="w-full bg-white text-black py-4 rounded-xl font-bold text-lg shadow-lg active:scale-[0.98] transition-transform flex items-center justify-center gap-3"
         >
-          {connecting ? (
-            <span>{t('syncing')}</span>
-          ) : (
-            <>
-              <div className="w-5 h-5">
-                <GoogleLogo className="w-full h-full" />
-              </div>
-              <span>{t('connect_gmail')}</span>
-            </>
-          )}
+          <div className="w-5 h-5">
+            <GoogleLogo className="w-full h-full" />
+          </div>
+          <span>{t('connect_gmail')}</span>
         </button>
-        
-        <button 
+
+        <button
           onClick={() => setLocation('/dashboard')}
           className="mt-4 text-sm text-muted-foreground"
         >

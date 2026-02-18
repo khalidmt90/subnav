@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'wouter';
 import { useLanguage } from '@/lib/i18n';
-import { Home, Settings, Bell, User } from 'lucide-react';
+import { Home, Settings, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function BottomNav() {
@@ -14,10 +14,10 @@ export function BottomNav() {
     { id: 'settings', icon: Settings, label: t('settings'), path: '/settings' },
   ];
 
-  if (location === '/' || location === '/login' || location === '/onboarding') return null;
+  if (location === '/' || location === '/login' || location === '/onboarding' || location === '/connect-gmail') return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 border-t border-border bg-surface/95 backdrop-blur-md pb-safe pt-2 px-6">
+    <div className="flex-shrink-0 border-t border-border bg-surface backdrop-blur-md pb-safe pt-2 px-6 z-30">
       <div className="flex justify-between items-center max-w-md mx-auto">
         {tabs.map((tab) => {
           const isActive = location === tab.path;

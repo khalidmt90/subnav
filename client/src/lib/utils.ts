@@ -5,11 +5,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, language: 'ar' | 'en') {
-  if (language === 'ar') {
-    return `${amount.toLocaleString('ar-SA')} ريال`;
+export function formatCurrency(amount: number, language: 'ar' | 'en', currency: 'SAR' | 'USD' = 'SAR') {
+  if (currency === 'USD') {
+    if (language === 'ar') {
+      return `${amount.toLocaleString('ar-SA')} $`;
+    }
+    return `$${amount.toLocaleString('en-US')}`;
   }
-  return `SAR ${amount.toLocaleString('en-US')}`;
+
+  // SAR currency
+  if (language === 'ar') {
+    return `${amount.toLocaleString('ar-SA')} ﷼`; // Using Saudi Riyal symbol
+  }
+  return `﷼${amount.toLocaleString('en-US')}`;
 }
 
 export function formatHijriDate(date: Date) {
@@ -22,7 +30,8 @@ export function formatHijriDate(date: Date) {
 
 export function formatGregorianDate(date: Date, language: 'ar' | 'en') {
   if (language === 'ar') {
-    return date.toLocaleDateString('ar-SA', {
+    // Force Gregorian calendar (ar-SA defaults to Hijri)
+    return date.toLocaleDateString('ar-SA-u-ca-gregory', {
       weekday: 'long',
       day: 'numeric',
       month: 'long'

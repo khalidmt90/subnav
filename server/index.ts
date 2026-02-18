@@ -3,6 +3,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import cors from "cors";
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,6 +13,12 @@ declare module "http" {
     rawBody: unknown;
   }
 }
+
+// Enable CORS for iOS app
+app.use(cors({
+  origin: true, // Allow all origins (including capacitor://)
+  credentials: true, // Allow cookies
+}));
 
 app.use(
   express.json({

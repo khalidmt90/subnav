@@ -20,7 +20,7 @@ interface SubscriptionProps {
 
 export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
   const [, setLocation] = useLocation();
-  const { language, isRTL, t } = useLanguage();
+  const { language, isRTL, t, currency } = useLanguage();
   const { updateSubscription, deleteSubscription } = useSubscriptions();
   const controls = useAnimation();
   
@@ -50,12 +50,19 @@ export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
   };
 
   return (
-    <div className="relative mb-3 rounded-2xl overflow-hidden bg-background" data-testid={`card-subscription-${sub.id}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: -100 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className="relative mb-3 rounded-2xl overflow-hidden bg-background"
+      data-testid={`card-subscription-${sub.id}`}
+    >
       <div className="absolute inset-y-0 right-0 flex w-[140px]">
         <button
           onClick={handleMute}
           data-testid={`button-mute-${sub.id}`}
-          className="flex-1 bg-neutral-800 flex flex-col items-center justify-center text-white gap-1 active:bg-neutral-700 transition-colors"
+          className="flex-1 bg-neutral-800 flex flex-col items-center justify-center text-white gap-1 active:bg-neutral-700 transition-all duration-150 hover:bg-neutral-700"
         >
           <BellOff className="w-5 h-5" />
           <span className="text-[10px]">{t('mute')}</span>
@@ -63,14 +70,14 @@ export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
         <button
           onClick={handleDelete}
           data-testid={`button-cancel-${sub.id}`}
-          className="flex-1 bg-danger flex flex-col items-center justify-center text-white gap-1 active:bg-red-600 transition-colors"
+          className="flex-1 bg-danger flex flex-col items-center justify-center text-white gap-1 active:bg-red-600 transition-all duration-150 hover:bg-red-600"
         >
           <Trash2 className="w-5 h-5" />
           <span className="text-[10px]">{t('cancel')}</span>
         </button>
       </div>
 
-      <motion.div 
+      <motion.div
         drag="x"
         dragConstraints={{ left: -140, right: 0 }}
         dragElastic={0.1}
@@ -78,7 +85,8 @@ export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
         animate={controls}
         style={{ x }}
         onClick={() => setLocation(`/subscription/${sub.id}`)}
-        className="bg-surface p-4 flex items-center gap-4 relative z-10 active:cursor-grabbing cursor-grab touch-pan-y"
+        className="bg-surface p-4 flex items-center gap-4 relative z-10 active:cursor-grabbing cursor-grab touch-pan-y transition-shadow duration-200 hover:shadow-lg"
+        whileTap={{ scale: 0.98 }}
       >
         <div 
           className="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-lg shrink-0"
@@ -91,7 +99,7 @@ export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
           <div className="flex justify-between items-start">
             <h3 className="font-semibold text-foreground text-lg leading-tight truncate pr-2" data-testid={`text-name-${sub.id}`}>{sub.name}</h3>
             <span className="font-bold text-foreground font-english shrink-0 text-sm sm:text-base" data-testid={`text-amount-${sub.id}`}>
-              {formatCurrency(sub.amount, language)}
+              {sub.amount > 0 ? formatCurrency(sub.amount, language, currency) : t('amount_unknown')}
             </span>
           </div>
           
@@ -113,9 +121,10 @@ export function SubscriptionCard({ sub }: { sub: SubscriptionProps }) {
             </span>
           </div>
         </div>
-        
+
+
         {isRTL ? <ChevronLeft className="text-muted-foreground w-4 h-4 opacity-30 shrink-0" /> : <ChevronRight className="text-muted-foreground w-4 h-4 opacity-30 shrink-0" />}
       </motion.div>
-    </div>
+    </motion.div>
   );
 }

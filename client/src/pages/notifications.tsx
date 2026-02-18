@@ -8,17 +8,23 @@ export default function Notifications() {
   const { notifications, isLoading, markRead, markAllRead } = useNotifications();
 
   return (
-    <div className="p-6 pb-24">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-foreground" data-testid="text-notifications-title">{t('notifications')}</h1>
-        <button
-          onClick={() => markAllRead()}
-          className="text-primary text-sm font-medium"
-          data-testid="button-mark-all-read"
-        >
-          {language === 'ar' ? 'قراءة الكل' : 'Mark all read'}
-        </button>
+    <div className="h-full flex flex-col">
+      {/* Fixed Header */}
+      <div className="bg-background border-b border-border/50 px-6 py-4 shadow-sm z-20 flex-shrink-0">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-foreground" data-testid="text-notifications-title">{t('notifications')}</h1>
+          <button
+            onClick={() => markAllRead()}
+            className="text-primary text-sm font-medium"
+            data-testid="button-mark-all-read"
+          >
+            {t('mark_all_read')}
+          </button>
+        </div>
       </div>
+
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto no-scrollbar p-6 pb-24">
 
       {isLoading ? (
         <div className="flex items-center justify-center py-12">
@@ -60,6 +66,7 @@ export default function Notifications() {
           )}
         </div>
       )}
+      </div>
     </div>
   );
 }

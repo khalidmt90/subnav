@@ -450,10 +450,202 @@ export const CANCEL_INFO: Record<string, MerchantCancelInfo> = {
     ]
   },
 
+  github: {
+    cancelUrl: 'https://github.com/settings/billing',
+    cancelUrlLabel: { ar: 'إعدادات الفوترة في Github', en: 'Github Billing Settings' },
+    durationAr: '٣ خطوات · دقيقة واحدة',
+    durationEn: '3 steps · 1 minute',
+    stepsAr: [
+      {
+        titleAr: 'افتح إعدادات الفوترة',
+        titleEn: 'Open Billing Settings',
+        descAr: 'سجّل الدخول إلى github.com',
+        descEn: 'Sign in to github.com',
+        linkUrl: 'https://github.com/settings/billing',
+        linkLabelAr: 'افتح صفحة الفوترة',
+        linkLabelEn: 'Open billing page',
+      },
+      {
+        titleAr: 'اختر الاشتراك المراد إلغاؤه',
+        titleEn: 'Select subscription to cancel',
+        descAr: 'Copilot أو Pro أو Teams',
+        descEn: 'Copilot, Pro, or Teams',
+      },
+      {
+        titleAr: 'اضغط "Cancel" وأكّد',
+        titleEn: 'Click "Cancel" and confirm',
+        descAr: 'سيبقى نشطاً حتى نهاية الفترة المدفوعة',
+        descEn: 'Stays active until end of paid period',
+      },
+    ],
+    stepsEn: [
+      {
+        titleAr: 'Open Billing Settings',
+        titleEn: 'Open Billing Settings',
+        descAr: 'Sign in to github.com',
+        descEn: 'Sign in to github.com',
+        linkUrl: 'https://github.com/settings/billing',
+        linkLabelAr: 'Open billing page',
+        linkLabelEn: 'Open billing page',
+      },
+      {
+        titleAr: 'Select subscription to cancel',
+        titleEn: 'Select subscription to cancel',
+        descAr: 'Copilot, Pro, or Teams',
+        descEn: 'Copilot, Pro, or Teams',
+      },
+      {
+        titleAr: 'Click "Cancel" and confirm',
+        titleEn: 'Click "Cancel" and confirm',
+        descAr: 'Stays active until end of paid period',
+        descEn: 'Stays active until end of paid period',
+      },
+    ]
+  },
+
+  claude: {
+    cancelUrl: 'https://console.anthropic.com/settings/billing',
+    cancelUrlLabel: { ar: 'إعدادات الفوترة في Claude', en: 'Claude Billing Settings' },
+    durationAr: '٢ خطوة · 30 ثانية',
+    durationEn: '2 steps · 30 seconds',
+    stepsAr: [
+      {
+        titleAr: 'افتح إعدادات الفوترة',
+        titleEn: 'Open Billing Settings',
+        linkUrl: 'https://console.anthropic.com/settings/billing',
+        linkLabelAr: 'افتح صفحة الفوترة',
+        linkLabelEn: 'Open billing page',
+      },
+      {
+        titleAr: 'اضغط "Cancel Plan"',
+        titleEn: 'Click "Cancel Plan"',
+        descAr: 'ستجد الزر في قسم الاشتراك',
+        descEn: 'You\'ll find the button in subscription section',
+      },
+    ],
+    stepsEn: [
+      {
+        titleAr: 'Open Billing Settings',
+        titleEn: 'Open Billing Settings',
+        linkUrl: 'https://console.anthropic.com/settings/billing',
+        linkLabelAr: 'Open billing page',
+        linkLabelEn: 'Open billing page',
+      },
+      {
+        titleAr: 'Click "Cancel Plan"',
+        titleEn: 'Click "Cancel Plan"',
+        descAr: 'You\'ll find the button in subscription section',
+        descEn: 'You\'ll find the button in subscription section',
+      },
+    ]
+  },
+
+  chatgpt: {
+    cancelUrl: 'https://platform.openai.com/settings/organization/billing/overview',
+    cancelUrlLabel: { ar: 'إعدادات ChatGPT', en: 'ChatGPT Settings' },
+    durationAr: '٣ خطوات · دقيقة واحدة',
+    durationEn: '3 steps · 1 minute',
+    stepsAr: [
+      {
+        titleAr: 'افتح إعدادات ChatGPT',
+        titleEn: 'Open ChatGPT Settings',
+        descAr: 'سجّل الدخول إلى chat.openai.com',
+        descEn: 'Sign in to chat.openai.com',
+        linkUrl: 'https://platform.openai.com/settings/organization/billing/overview',
+        linkLabelAr: 'افتح الإعدادات',
+        linkLabelEn: 'Open settings',
+      },
+      {
+        titleAr: 'اذهب إلى "My Plan"',
+        titleEn: 'Go to "My Plan"',
+        descAr: 'في القائمة الجانبية',
+        descEn: 'In the sidebar',
+      },
+      {
+        titleAr: 'اضغط "Cancel Plan"',
+        titleEn: 'Click "Cancel Plan"',
+        descAr: 'وأكّد الإلغاء',
+        descEn: 'And confirm cancellation',
+      },
+    ],
+    stepsEn: [
+      {
+        titleAr: 'Open ChatGPT Settings',
+        titleEn: 'Open ChatGPT Settings',
+        descAr: 'Sign in to chat.openai.com',
+        descEn: 'Sign in to chat.openai.com',
+        linkUrl: 'https://platform.openai.com/settings/organization/billing/overview',
+        linkLabelAr: 'Open settings',
+        linkLabelEn: 'Open settings',
+      },
+      {
+        titleAr: 'Go to "My Plan"',
+        titleEn: 'Go to "My Plan"',
+        descAr: 'In the sidebar',
+        descEn: 'In the sidebar',
+      },
+      {
+        titleAr: 'Click "Cancel Plan"',
+        titleEn: 'Click "Cancel Plan"',
+        descAr: 'And confirm cancellation',
+        descEn: 'And confirm cancellation',
+      },
+    ]
+  },
+
+  openai: {
+    cancelUrl: 'https://platform.openai.com/settings/organization/billing/overview',
+    cancelUrlLabel: { ar: 'إعدادات OpenAI', en: 'OpenAI Settings' },
+    durationAr: '٣ خطوات · دقيقة واحدة',
+    durationEn: '3 steps · 1 minute',
+    stepsAr: [
+      {
+        titleAr: 'افتح إعدادات OpenAI',
+        titleEn: 'Open OpenAI Settings',
+        linkUrl: 'https://platform.openai.com/settings/organization/billing/overview',
+        linkLabelAr: 'افتح الإعدادات',
+        linkLabelEn: 'Open settings',
+      },
+      {
+        titleAr: 'اذهب إلى Billing',
+        titleEn: 'Go to Billing',
+        descAr: 'من القائمة الجانبية',
+        descEn: 'From the sidebar',
+      },
+      {
+        titleAr: 'اضغط "Cancel subscription"',
+        titleEn: 'Click "Cancel subscription"',
+        descAr: 'وأكّد الإلغاء',
+        descEn: 'And confirm cancellation',
+      },
+    ],
+    stepsEn: [
+      {
+        titleAr: 'Open OpenAI Settings',
+        titleEn: 'Open OpenAI Settings',
+        linkUrl: 'https://platform.openai.com/settings/organization/billing/overview',
+        linkLabelAr: 'Open settings',
+        linkLabelEn: 'Open settings',
+      },
+      {
+        titleAr: 'Go to Billing',
+        titleEn: 'Go to Billing',
+        descAr: 'From the sidebar',
+        descEn: 'From the sidebar',
+      },
+      {
+        titleAr: 'Click "Cancel subscription"',
+        titleEn: 'Click "Cancel subscription"',
+        descAr: 'And confirm cancellation',
+        descEn: 'And confirm cancellation',
+      },
+    ]
+  },
+
   // Fallback for unknown merchants
   _default: {
-    cancelUrl: '',   // will use Google search fallback
-    cancelUrlLabel: { ar: 'البحث عن طريقة الإلغاء', en: 'Search how to cancel' },
+    cancelUrl: '',   // will use service-specific URL fallback
+    cancelUrlLabel: { ar: 'صفحة إلغاء الخدمة', en: 'Service cancellation page' },
     durationAr: 'خطوات عامة',
     durationEn: 'General steps',
     stepsAr: DEFAULT_STEPS_AR,
@@ -470,11 +662,19 @@ export function getCancelInfo(merchant: string): MerchantCancelInfo & { isKnown:
   const info = CANCEL_INFO[key] ?? CANCEL_INFO['_default'];
   const isKnown = key in CANCEL_INFO && key !== '_default';
 
-  // For unknown merchants, generate a Google search URL
+  // For unknown merchants, try to generate a URL to their account/settings page
   if (!isKnown) {
+    // Common URL patterns for account/billing pages
+    const merchantDomain = key.replace(/\s+/g, '').toLowerCase();
+    const possibleUrl = `https://${merchantDomain}.com/account/billing`;
+
     return {
       ...info,
-      cancelUrl: `https://www.google.com/search?q=كيفية+إلغاء+اشتراك+${encodeURIComponent(merchant)}`,
+      cancelUrl: possibleUrl,
+      cancelUrlLabel: {
+        ar: `صفحة حساب ${merchant}`,
+        en: `${merchant} Account Page`
+      },
       isKnown: false,
     };
   }

@@ -6,15 +6,14 @@ const config: CapacitorConfig = {
   webDir: 'dist/public',
 
   server: {
-    url: 'https://subnav-production.up.railway.app',
-    cleartext: false,
     androidScheme: 'https'
   },
 
   ios: {
     backgroundColor: '#0B0C14',
-    contentInset: 'automatic',
-    preferredContentMode: 'mobile'
+    contentInset: 'never',
+    preferredContentMode: 'mobile',
+    scrollEnabled: false
   },
 
   plugins: {

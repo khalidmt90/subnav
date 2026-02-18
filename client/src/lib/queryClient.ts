@@ -7,15 +7,36 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+// Helper to get the correct backend URL for Capacitor apps
+function getBackendUrl(path: string): string {
+  const isNative = window.location.protocol === 'capacitor:';
+  if (isNative) {
+    // Use configured backend URL from environment variable
+    // Default to localhost for iOS simulator if not set
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5001';
+    return `${backendUrl}${path}`;
+  }
+  return path;
+}
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  const isNative = window.location.protocol === 'capacitor:';
+  const backendSessionId = isNative ? localStorage.getItem('backend_session_id') : null;
+
+  // For native apps, include sessionId in the request body
+  const requestBody = data || {};
+  if (isNative && backendSessionId) {
+    (requestBody as any).sessionId = backendSessionId;
+  }
+
+  const res = await fetch(getBackendUrl(url), {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
-    body: data ? JSON.stringify(data) : undefined,
+    headers: (data || (isNative && backendSessionId)) ? { "Content-Type": "application/json" } : {},
+    body: (data || (isNative && backendSessionId)) ? JSON.stringify(requestBody) : undefined,
     credentials: "include",
   });
 
@@ -29,7 +50,8 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey.join("/") as string, {
+    const url = queryKey.join("/") as string;
+    const res = await fetch(getBackendUrl(url), {
       credentials: "include",
     });
 

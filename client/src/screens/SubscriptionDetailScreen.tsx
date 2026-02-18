@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useLocation } from 'wouter';
 import { useLanguage } from '@/lib/i18n';
 import { getCancelInfo } from '@/data/cancelUrls';
-import { ChevronRight, ChevronLeft, ExternalLink, ChevronDown, BellOff, RefreshCw, Loader2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ExternalLink, ChevronDown, Loader2 } from 'lucide-react';
 import { formatCurrency, formatGregorianDate } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSubscription } from '@/hooks/useSubscriptions';
 
 export default function SubscriptionDetailScreen({ params }: { params: { id: string } }) {
   const [, setLocation] = useLocation();
-  const { t, language, isRTL } = useLanguage();
+  const { t, language, isRTL, currency } = useLanguage();
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const { data: subscription, isLoading } = useSubscription(params.id);
 
@@ -24,7 +24,7 @@ export default function SubscriptionDetailScreen({ params }: { params: { id: str
   if (!subscription) {
     return (
       <div className="flex items-center justify-center h-full bg-[#0B0C14]">
-        <p className="text-muted-foreground">{language === 'ar' ? 'لم يتم العثور على الاشتراك' : 'Subscription not found'}</p>
+        <p className="text-muted-foreground">{t('sub_not_found')}</p>
       </div>
     );
   }
@@ -41,9 +41,9 @@ export default function SubscriptionDetailScreen({ params }: { params: { id: str
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0B0C14] overflow-y-auto no-scrollbar pb-20">
-      <div className="flex items-center justify-between px-5 py-4 sticky top-0 bg-[#0B0C14]/80 backdrop-blur-md z-10 border-b border-[rgba(255,255,255,0.07)]">
-        <button 
+    <div className="flex flex-col h-full bg-[#0B0C14] overflow-y-auto no-scrollbar overscroll-contain pb-6">
+      <div className="flex items-center justify-between px-5 pt-safe-top py-4 sticky top-0 bg-[#0B0C14]/80 backdrop-blur-md z-10 border-b border-[rgba(255,255,255,0.07)]">
+        <button
           onClick={() => setLocation('/dashboard')}
           data-testid="button-back"
           className="w-9 h-9 bg-[#1C1D2E] border border-[rgba(255,255,255,0.11)] rounded-[10px] flex items-center justify-center text-[#F0F0FA]"
@@ -51,9 +51,7 @@ export default function SubscriptionDetailScreen({ params }: { params: { id: str
           {isRTL ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
         </button>
         <h1 className="text-base font-semibold text-[#F0F0FA]">{t('subscription_detail')}</h1>
-        <button className="w-9 h-9 bg-[#1C1D2E] border border-[rgba(255,255,255,0.11)] rounded-[10px] flex items-center justify-center text-[#F0F0FA]">
-          <span className="text-lg mb-2">...</span>
-        </button>
+        <div className="w-9" />
       </div>
 
       <div className="flex flex-col items-center pt-2 pb-6 px-5 relative">
@@ -72,8 +70,8 @@ export default function SubscriptionDetailScreen({ params }: { params: { id: str
 
       <div className="grid grid-cols-2 gap-2.5 px-4 pt-5 pb-0">
         <div className="bg-[#13141F] border border-[rgba(255,255,255,0.07)] rounded-[14px] p-3.5">
-          <div className="text-[11px] font-semibold uppercase tracking-wider text-[#7070A0] mb-1.5">{t('amount_unknown').split(' ')[0]}</div>
-          <div className="text-lg font-bold text-[#F0F0FA] font-english" data-testid="text-detail-amount">{formatCurrency(subscription.amount, language)}</div>
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-[#7070A0] mb-1.5">{t('sub_amount')}</div>
+          <div className="text-lg font-bold text-[#F0F0FA] font-english" data-testid="text-detail-amount">{subscription.amount > 0 ? formatCurrency(subscription.amount, language, currency) : t('amount_unknown')}</div>
           <div className="text-xs text-[#8A8AB8] mt-1">{t('monthly_suffix')}</div>
         </div>
         <div className="bg-[#13141F] border border-[rgba(255,255,255,0.07)] rounded-[14px] p-3.5">
@@ -136,7 +134,7 @@ export default function SubscriptionDetailScreen({ params }: { params: { id: str
               </div>
               <div className="flex flex-col items-start">
                 <span className="text-sm font-semibold text-[#F0F0FA]">
-                  {language === 'ar' ? 'كيفية الإلغاء' : 'How to Cancel'}
+                  {t('how_to_cancel')}
                 </span>
                 <span className="text-[11px] text-[#8A8AB8]">{duration}</span>
               </div>
@@ -208,24 +206,21 @@ export default function SubscriptionDetailScreen({ params }: { params: { id: str
             <div className="text-xs text-[#8A8AB8] leading-relaxed line-clamp-3 overflow-hidden text-ellipsis mb-2.5">
               {subscription.emailSnippet}
             </div>
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-[#8A8AB8] cursor-pointer hover:text-[#F0F0FA] transition-colors">
+            <button
+              onClick={() => {
+                const searchQuery = encodeURIComponent(subscription.emailSubject || '');
+                window.open(`https://mail.google.com/mail/u/0/#search/${searchQuery}`, '_blank');
+              }}
+              className="flex items-center gap-1.5 text-xs font-semibold text-[#8A8AB8] hover:text-[#F0F0FA] transition-colors active:scale-95"
+            >
                <ExternalLink className="w-3 h-3" />
-               <span>{language === 'ar' ? 'عرض الإيميل الأصلي' : 'View original email'}</span>
-            </div>
+               <span>{t('view_original_email')}</span>
+            </button>
           </div>
         </div>
       )}
 
-      <div className="flex gap-2.5 px-4 pt-1 pb-6">
-        <button className="flex-1 h-[46px] bg-[#13141F] border border-[rgba(255,255,255,0.07)] rounded-[13px] flex items-center justify-center gap-1.5 cursor-pointer text-[13px] font-semibold text-[#8A8AB8] hover:bg-[#1C1D2E] hover:text-[#FAC06D] hover:border-[rgba(250,192,109,0.3)] transition-all" data-testid="button-mute">
-          <BellOff className="w-4 h-4" />
-          {t('mute')}
-        </button>
-        <button className="flex-1 h-[46px] bg-[#13141F] border border-[rgba(255,255,255,0.07)] rounded-[13px] flex items-center justify-center gap-1.5 cursor-pointer text-[13px] font-semibold text-[#8A8AB8] hover:bg-[#1C1D2E] hover:text-[#2DD4BF] hover:border-[rgba(45,212,191,0.3)] transition-all" data-testid="button-refresh">
-          <RefreshCw className="w-4 h-4" />
-          {t('refresh')}
-        </button>
-      </div>
+      <div className="h-6" />
     </div>
   );
 }

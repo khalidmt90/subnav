@@ -78,19 +78,53 @@
   * {
     @apply border-border;
   }
+
+  html {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body {
     @apply bg-background text-foreground antialiased selection:bg-primary/20;
     font-family: var(--font-arabic);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    overscroll-behavior: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
-  
+
   /* RTL specific adjustments */
   [dir="rtl"] {
     font-family: var(--font-arabic);
   }
-  
+
   [dir="ltr"] {
     font-family: var(--font-english);
   }
+
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button, a, input, select, textarea {
+    @apply transition-colors duration-200;
+  }
+}
+
+/* Safe area utilities for iOS notch/home indicator */
+.pt-safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Mobile wrapper for desktop view */
@@ -105,4 +139,35 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  scroll-behavior: smooth;
+}
+
+/* Smooth scrolling for overflow containers */
+.overflow-y-auto {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Touch feedback for mobile */
+@media (hover: none) and (pointer: coarse) {
+  button:active, a:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  animation: shimmer 1.5s infinite;
+  background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+  background-size: 200% 100%;
 }

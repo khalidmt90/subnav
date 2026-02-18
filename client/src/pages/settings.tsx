@@ -1,12 +1,12 @@
 import React from 'react';
 import { useLanguage } from '@/lib/i18n';
 import { useAuth } from '@/hooks/useAuth';
-import { ChevronLeft, ChevronRight, Globe, Moon, Bell, Shield, LogOut } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Globe, Moon, Bell, Shield, LogOut, DollarSign } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { useLocation } from 'wouter';
 
 export default function Settings() {
-  const { t, language, setLanguage, isRTL } = useLanguage();
+  const { t, language, setLanguage, currency, setCurrency, isRTL } = useLanguage();
   const { user, updateUser, logout } = useAuth();
   const [, setLocation] = useLocation();
 
@@ -29,11 +29,17 @@ export default function Settings() {
     }
   };
 
+  const handleCurrencyToggle = async () => {
+    const newCurrency = currency === 'SAR' ? 'USD' : 'SAR';
+    setCurrency(newCurrency);
+  };
+
   const sections = [
     {
       title: t('account'),
       items: [
         { icon: Globe, label: t('language'), value: language === 'ar' ? 'العربية' : 'English', action: handleLanguageToggle },
+        { icon: DollarSign, label: t('currency'), value: currency === 'SAR' ? t('sar') : t('usd'), action: handleCurrencyToggle },
         { icon: Moon, label: t('theme'), value: t('theme_dark'), toggle: true },
       ]
     },
@@ -54,10 +60,15 @@ export default function Settings() {
   ];
 
   return (
-    <div className="p-6 pb-24">
-      <h1 className="text-2xl font-bold text-foreground mb-6" data-testid="text-settings-title">{t('settings')}</h1>
+    <div className="h-full flex flex-col">
+      {/* Fixed Header */}
+      <div className="bg-background border-b border-border/50 px-6 py-4 shadow-sm z-20 flex-shrink-0">
+        <h1 className="text-2xl font-bold text-foreground" data-testid="text-settings-title">{t('settings')}</h1>
+      </div>
 
-      <div className="space-y-6">
+      {/* Scrollable Content */}
+      <div className="flex-1 overflow-y-auto no-scrollbar p-6 pb-24">
+        <div className="space-y-6">
         {sections.map((section, idx) => (
           <div key={idx}>
             <h2 className="text-sm font-semibold text-muted-foreground mb-3 px-1">{section.title}</h2>
@@ -95,6 +106,7 @@ export default function Settings() {
             </div>
           </div>
         ))}
+        </div>
       </div>
     </div>
   );

@@ -4,14 +4,15 @@ import { useLanguage } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabaseClient';
+import { signInWithOAuthInApp } from '@/lib/auth-utils';
 
-import { GoogleLogo, AppleLogo } from '@/components/Icons';
+import { GoogleLogo } from '@/components/Icons';
 
 export default function Login() {
   const [, setLocation] = useLocation();
   const { t, isRTL } = useLanguage();
-  const { login, isLoggingIn } = useAuth();
-  const [loadingProvider, setLoadingProvider] = useState<'apple' | 'google' | null>(null);
+  const { isLoggingIn } = useAuth();
+  const [loadingProvider, setLoadingProvider] = useState<'google' | null>(null);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -27,22 +28,10 @@ export default function Login() {
     getSession();
   }, []);
 
-  const handleAppleLogin = async () => {
-    setLoadingProvider('apple');
-    try {
-      await login({ email: "user@icloud.com", displayName: "Apple User", provider: "apple" });
-      setLocation('/connect-gmail');
-    } catch {
-      setLoadingProvider(null);
-    }
-  };
-
   const handleGoogleLogin = async () => {
     setLoadingProvider('google');
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-      });
+      const { error } = await signInWithOAuthInApp('google');
       if (error) throw error;
     } catch (e) {
       console.error("Google login failed:", e);
@@ -71,34 +60,15 @@ export default function Login() {
         </motion.div>
 
         <div className="space-y-4 w-full max-w-sm mx-auto">
-          <motion.button 
-            whileTap={{ scale: 0.98 }}
-            onClick={handleAppleLogin}
-            disabled={isLoggingIn}
-            data-testid="button-apple-login"
-            className="w-full h-[56px] bg-white text-black rounded-[18px] flex items-center justify-center gap-3 shadow-lg relative overflow-hidden group"
-          >
-            {loadingProvider === 'apple' ? (
-              <div className="w-6 h-6 border-2 border-black/20 border-t-black rounded-full animate-spin" />
-            ) : (
-              <>
-                <AppleLogo className="w-6 h-6" />
-                <span className="font-bold text-lg">
-                  {isRTL ? 'المتابعة باستخدام Apple' : 'Continue with Apple'}
-                </span>
-              </>
-            )}
-          </motion.button>
-
-          <motion.button 
+          <motion.button
             whileTap={{ scale: 0.98 }}
             onClick={handleGoogleLogin}
             disabled={isLoggingIn}
             data-testid="button-google-login"
-            className="w-full h-[56px] bg-[#1C1D2E] text-white border border-[rgba(255,255,255,0.08)] rounded-[18px] flex items-center justify-center gap-3 shadow-lg relative overflow-hidden"
+            className="w-full h-[56px] bg-white text-black rounded-[18px] flex items-center justify-center gap-3 shadow-lg relative overflow-hidden"
           >
             {loadingProvider === 'google' ? (
-              <div className="w-6 h-6 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+              <div className="w-6 h-6 border-2 border-black/20 border-t-black rounded-full animate-spin" />
             ) : (
               <>
                 <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center p-1">

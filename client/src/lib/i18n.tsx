@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type Language = 'ar' | 'en';
+type Currency = 'SAR' | 'USD';
 
 type LanguageContextType = {
   language: Language;
   setLanguage: (lang: Language) => void;
+  currency: Currency;
+  setCurrency: (curr: Currency) => void;
   t: (key: string, vars?: Record<string, string | number>) => string;
   isRTL: boolean;
   dir: 'rtl' | 'ltr';
@@ -123,12 +126,29 @@ const translations = {
     add_subscription: 'إضافة اشتراك',
     sub_name: 'اسم الخدمة',
     sub_name_placeholder: 'مثال: Netflix',
-    sub_amount: 'المبلغ (ريال)',
+    sub_amount: 'المبلغ',
     sub_renewal: 'تاريخ التجديد القادم',
     sub_category: 'الفئة',
     sub_trial: 'فترة تجريبية',
     add: 'إضافة',
     close: 'إغلاق',
+    please_connect_gmail: 'الرجاء توصيل Gmail أولاً',
+    no_subs_found: 'لم يتم العثور على اشتراكات جديدة',
+    gmail_sync_failed: 'فشل مزامنة Gmail',
+    add_sub_failed: 'فشل في إضافة الاشتراك',
+    no_subs_yet: 'لا توجد اشتراكات بعد',
+    add_subs_to_track: 'أضف اشتراكاتك لتتبع التجديدات',
+    sub_not_found: 'لم يتم العثور على الاشتراك',
+    how_to_cancel: 'كيفية الإلغاء',
+    view_original_email: 'عرض الإيميل الأصلي',
+    mark_all_read: 'قراءة الكل',
+    getting_gmail_access: 'جاري الوصول إلى Gmail...',
+    scanning_gmail: 'جاري فحص Gmail...',
+    found_n_subs: 'تم العثور على {count} اشتراك جديد!',
+    sync_failed_error: 'فشل مزامنة Gmail: {error}',
+    currency: 'العملة',
+    sar: 'ريال سعودي (﷼)',
+    usd: 'دولار أمريكي ($)',
   },
   en: {
     app_name: 'Subscriptions Radar',
@@ -242,12 +262,29 @@ const translations = {
     add_subscription: 'Add Subscription',
     sub_name: 'Service Name',
     sub_name_placeholder: 'e.g. Netflix',
-    sub_amount: 'Amount (SAR)',
+    sub_amount: 'Amount',
     sub_renewal: 'Next Renewal Date',
     sub_category: 'Category',
     sub_trial: 'Free Trial',
     add: 'Add',
     close: 'Close',
+    please_connect_gmail: 'Please connect Gmail first',
+    no_subs_found: 'No new subscriptions found',
+    gmail_sync_failed: 'Gmail sync failed',
+    add_sub_failed: 'Failed to add subscription',
+    no_subs_yet: 'No subscriptions yet',
+    add_subs_to_track: 'Add your subscriptions to track renewals',
+    sub_not_found: 'Subscription not found',
+    how_to_cancel: 'How to Cancel',
+    view_original_email: 'View original email',
+    mark_all_read: 'Mark all read',
+    getting_gmail_access: 'Getting Gmail access...',
+    scanning_gmail: 'Scanning your Gmail...',
+    found_n_subs: 'Found {count} new subscription(s)!',
+    sync_failed_error: 'Failed to sync Gmail: {error}',
+    currency: 'Currency',
+    sar: 'Saudi Riyal (﷼)',
+    usd: 'US Dollar ($)',
   }
 };
 
@@ -255,15 +292,27 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>('ar');
+  const [currency, setCurrencyState] = useState<Currency>('SAR');
 
   useEffect(() => {
     // Default to RTL on mount
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
+
+    // Load currency from localStorage
+    const savedCurrency = localStorage.getItem('currency') as Currency;
+    if (savedCurrency && (savedCurrency === 'SAR' || savedCurrency === 'USD')) {
+      setCurrencyState(savedCurrency);
+    }
   }, [language]);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
+  };
+
+  const setCurrency = (curr: Currency) => {
+    setCurrencyState(curr);
+    localStorage.setItem('currency', curr);
   };
 
   const t = (key: string, vars?: Record<string, string | number>) => {
@@ -278,10 +327,12 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ 
-      language, 
-      setLanguage, 
-      t, 
+    <LanguageContext.Provider value={{
+      language,
+      setLanguage,
+      currency,
+      setCurrency,
+      t,
       isRTL: language === 'ar',
       dir: language === 'ar' ? 'rtl' : 'ltr'
     }}>

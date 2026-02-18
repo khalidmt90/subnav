@@ -45,9 +45,34 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const syncStatus = pgTable("sync_status", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  status: text("status").notNull().default("idle"), // idle, syncing, completed, error
+  progress: integer("progress").notNull().default(0), // 0-100
+  totalEmails: integer("total_emails").notNull().default(0),
+  processedEmails: integer("processed_emails").notNull().default(0),
+  foundSubscriptions: integer("found_subscriptions").notNull().default(0),
+  error: text("error"),
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
-export const insertSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true, createdAt: true });
+
+// Custom schema for subscriptions with proper date handling
+const baseSubscriptionSchema = createInsertSchema(subscriptions).omit({ id: true, createdAt: true });
+export const insertSubscriptionSchema = baseSubscriptionSchema.extend({
+  renewalDate: z.union([
+    z.date(),
+    z.string().transform((val) => new Date(val)),
+    z.number().transform((val) => new Date(val)),
+  ]).pipe(z.date()),
+});
+
 export const insertNotificationSchema = createInsertSchema(notifications).omit({ id: true, createdAt: true });
+export const insertSyncStatusSchema = createInsertSchema(syncStatus).omit({ id: true, updatedAt: true });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -55,3 +80,5 @@ export type InsertSubscription = z.infer<typeof insertSubscriptionSchema>;
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
+export type SyncStatus = typeof syncStatus.$inferSelect;
+export type InsertSyncStatus = z.infer<typeof insertSyncStatusSchema>;
